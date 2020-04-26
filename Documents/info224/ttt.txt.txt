@@ -1,0 +1,204 @@
+Question 01 : 
+public class FixedCapacityList<E> implements List<E>, Iterable<E> {
+    protected int capacity;
+    protected int actualSize;
+    protected Object[] list;
+
+    public FixedCapacityList(int capacity){
+        this.capacity = capacity;
+        this.list = new Object[this.capacity];
+        this.actualSize = 0;
+    }
+
+    @Override
+    public E get(int i) {
+        return (E) list[i];
+    }
+
+    @Override
+    public void add(Object elt) {
+        if(this.actualSize < this.capacity){
+            this.list[this.actualSize] = elt;
+            this.actualSize++;
+        }
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new AscendingIterator<>(this);
+    }
+
+    public Iterator<E> DescendingIterator() {
+        return new DescendingIterator<>(this);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Question 02 : 
+public class Main {
+    public static void main(String[] args){
+        LinkedList<Integer> list = new LinkedList<>();
+        list.add(3);
+        list.add(5);
+        list.add(1);
+        list.add(-2);
+        Iterator<Integer> it = list.iterator();
+        while (it.hasNext()){
+            System.out.println(it.next());
+        }
+    }
+}
+
+
+
+
+Question 03:
+
+public class AscendingIterator<Object> implements Iterator<Object> {
+    protected FixedCapacityList<Object> list;
+    protected int nextIndex = 0;
+
+    protected AscendingIterator(FixedCapacityList<Object> list){
+        this.list = list;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.list.actualSize > nextIndex;
+    }
+
+    @Override
+    public Object next() {
+        Object el = this.list.get(nextIndex);
+        this.nextIndex++;
+        return el;
+    }
+}
+
+
+
+question 04:
+public class DescendingIterator<Object> implements Iterator<Object> {
+    protected FixedCapacityList<Object> list;
+    protected int nextIndex;
+
+    protected DescendingIterator(FixedCapacityList<Object> list){
+        this.list = list;
+        this.nextIndex = list.actualSize - 1;
+    }
+
+
+    @Override
+    public boolean hasNext() {
+        return this.nextIndex >= 0;
+    }
+
+    @Override
+    public Object next() {
+        Object el = this.list.get(nextIndex);
+        this.nextIndex--;
+        return el;
+    }
+}
+
+
+
+
+question 05:
+public class Block<Object> {
+    protected Object contents;
+    protected Block<Object> nextBlock;
+
+    protected Block(Object contents, Block<Object> nextBlock){
+        this.contents = contents;
+        this.nextBlock = nextBlock;
+    }
+}
+
+
+question 06:
+public class LinkedList<Object> implements List<Object>, Iterable<Object> {
+    protected Block<Object> firstBlock;
+    protected Block<Object> lastBlock;
+    protected int actualSize;
+
+    public LinkedList(){
+        this.firstBlock = null;
+        this.lastBlock = null;
+        this.actualSize = 0;
+    }
+
+    @Override
+    public Object get(int i) {
+        Block b = this.firstBlock;
+        Object elt = (Object) b.contents;
+        for(int j = 1; j<=i; j++){
+            b = b.nextBlock;
+            elt = (Object) b.contents;
+        }
+        return elt;
+    }
+
+    @Override
+    public void add(Object elt) {
+        if(actualSize == 0){
+            this.firstBlock = new Block<>(elt, null);
+            this.lastBlock = this.firstBlock;
+            this.actualSize++;
+        } else {
+            Block<Object> b = new Block<>(elt, null);
+            this.lastBlock.nextBlock = b;
+            this.lastBlock = b;
+            this.actualSize++;
+        }
+    }
+
+    @Override
+    public Iterator<Object> iterator() {
+        return new LinkedListIterator<>(this);
+    }
+}
+
+
+
+question 07:
+
+public class LinkedListIterator<Object> implements Iterator<Object> {
+    protected LinkedList<Object> list;
+    protected int nextIndex;
+
+    protected LinkedListIterator(LinkedList<Object> list){
+        this.list = list;
+        this.nextIndex = 0;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.nextIndex < this.list.actualSize;
+    }
+
+    @Override
+    public Object next() {
+        Object elt = this.list.get(this.nextIndex);
+        this.nextIndex++;
+        return elt;
+    }
+}
